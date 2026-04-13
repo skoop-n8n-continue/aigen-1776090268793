@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Dashboard</title>
+    <!-- Cache Control -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+
+    <!-- Scripts & Styles -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="stylesheet" href="styles.css?v=w3ath3r">
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #10181f;
+            color: #ffffff;
+            overflow: hidden;
+        }
+        .bg-overlay {
+            background: linear-gradient(rgba(16, 24, 31, 0.4), rgba(16, 24, 31, 0.8));
+        }
+        .weather-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body class="h-screen w-screen flex flex-col justify-center items-center p-0 m-0">
+    <!-- Background Image -->
+    <div class="fixed inset-0 z-0">
+        <img src="https://skoop-dev-code-agent.s3.us-east-1.amazonaws.com/skoop-n8n-continue%2Faigen-1776090268793%2Fassets%2Fweather_background-1776090373299.png"
+             class="w-full h-full object-cover" alt="Background">
+        <div class="fixed inset-0 bg-overlay z-10"></div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="relative z-20 w-full max-w-6xl p-8 grid grid-cols-1 lg:grid-cols-3 gap-8 animate__animated animate__fadeIn">
+
+        <!-- Left Column: Current Weather -->
+        <div class="lg:col-span-2 flex flex-col justify-between space-y-8">
+            <div id="location-header" class="space-y-2">
+                <h2 id="current-date" class="text-[#00b7af] font-medium tracking-wide uppercase text-sm">Monday, April 13</h2>
+                <h1 id="location-name" class="text-6xl font-bold tracking-tight">Detecting Location...</h1>
+            </div>
+
+            <div class="flex items-center space-x-8">
+                <div id="weather-icon-large" class="text-white">
+                    <i data-lucide="cloud" style="width: 120px; height: 120px;"></i>
+                </div>
+                <div>
+                    <div class="flex items-start">
+                        <span id="current-temp" class="text-9xl font-bold">--</span>
+                        <span class="text-4xl font-medium mt-4 text-[#00b7af]">°C</span>
+                    </div>
+                    <p id="weather-description" class="text-2xl text-gray-300 font-light mt-[-10px]">Cloudy</p>
+                </div>
+            </div>
+
+            <!-- Stats Bar -->
+            <div class="grid grid-cols-3 gap-4">
+                <div class="weather-card rounded-2xl p-6 flex flex-col items-center justify-center space-y-2">
+                    <i data-lucide="droplets" class="text-[#00b7af] w-6 h-6"></i>
+                    <span class="text-sm text-gray-400">Humidity</span>
+                    <span id="stat-humidity" class="text-xl font-semibold">--%</span>
+                </div>
+                <div class="weather-card rounded-2xl p-6 flex flex-col items-center justify-center space-y-2">
+                    <i data-lucide="wind" class="text-[#00b7af] w-6 h-6"></i>
+                    <span class="text-sm text-gray-400">Wind</span>
+                    <span id="stat-wind" class="text-xl font-semibold">-- km/h</span>
+                </div>
+                <div class="weather-card rounded-2xl p-6 flex flex-col items-center justify-center space-y-2">
+                    <i data-lucide="sun" class="text-[#00b7af] w-6 h-6"></i>
+                    <span class="text-sm text-gray-400">UV Index</span>
+                    <span id="stat-uv" class="text-xl font-semibold">--</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Forecast -->
+        <div class="weather-card rounded-3xl p-8 flex flex-col">
+            <h3 class="text-xl font-semibold mb-8 border-b border-white/10 pb-4">5-Day Forecast</h3>
+            <div id="forecast-list" class="flex-grow space-y-6">
+                <!-- Forecast items will be injected here -->
+                <div class="flex items-center justify-between opacity-50 animate-pulse">
+                    <div class="w-12 h-4 bg-white/20 rounded"></div>
+                    <div class="w-8 h-8 bg-white/20 rounded-full"></div>
+                    <div class="w-16 h-4 bg-white/20 rounded"></div>
+                </div>
+                <!-- Repeat 4 times for loading -->
+                <div class="flex items-center justify-between opacity-50 animate-pulse">
+                    <div class="w-12 h-4 bg-white/20 rounded"></div>
+                    <div class="w-8 h-8 bg-white/20 rounded-full"></div>
+                    <div class="w-16 h-4 bg-white/20 rounded"></div>
+                </div>
+                <div class="flex items-center justify-between opacity-50 animate-pulse">
+                    <div class="w-12 h-4 bg-white/20 rounded"></div>
+                    <div class="w-8 h-8 bg-white/20 rounded-full"></div>
+                    <div class="w-16 h-4 bg-white/20 rounded"></div>
+                </div>
+                <div class="flex items-center justify-between opacity-50 animate-pulse">
+                    <div class="w-12 h-4 bg-white/20 rounded"></div>
+                    <div class="w-8 h-8 bg-white/20 rounded-full"></div>
+                    <div class="w-16 h-4 bg-white/20 rounded"></div>
+                </div>
+                <div class="flex items-center justify-between opacity-50 animate-pulse">
+                    <div class="w-12 h-4 bg-white/20 rounded"></div>
+                    <div class="w-8 h-8 bg-white/20 rounded-full"></div>
+                    <div class="w-16 h-4 bg-white/20 rounded"></div>
+                </div>
+            </div>
+
+            <div class="mt-8 pt-6 border-t border-white/10 text-center">
+                <p class="text-xs text-gray-400 italic">Last updated: <span id="last-updated">--:--</span></p>
+                <p class="text-[10px] text-gray-500 mt-2 uppercase tracking-widest">Open-Meteo Data</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer for Signage Info -->
+    <div class="fixed bottom-4 right-8 z-30 flex items-center space-x-2 text-white/40">
+        <span id="clock" class="text-lg font-medium">14:30</span>
+        <span class="w-1 h-1 bg-white/20 rounded-full"></span>
+        <span class="text-xs uppercase tracking-tighter">Digital Signage Network</span>
+    </div>
+
+    <script src="script.js?v=w3ath3r"></script>
+</body>
+</html>

@@ -1,0 +1,75 @@
+/* Custom Weather App Styles */
+
+:root {
+    --primary: #00b7af;
+    --dark: #10181f;
+    --white: #ffffff;
+}
+
+body {
+    background-color: var(--dark);
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* Recommended for signage */
+}
+
+/* Glassmorphism utility */
+.weather-card {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease, background 0.3s ease;
+}
+
+/* Background Overlay */
+.bg-overlay {
+    background: radial-gradient(circle at top right, rgba(0, 183, 175, 0.15), transparent 40%),
+                linear-gradient(to bottom, rgba(16, 24, 31, 0.2), rgba(16, 24, 31, 0.9));
+}
+
+/* Animations */
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+}
+
+#weather-icon-large {
+    animation: float 6s ease-in-out infinite;
+    filter: drop-shadow(0 0 20px rgba(0, 183, 175, 0.3));
+}
+
+/* Responsive improvements for signage */
+@media (min-height: 1000px) {
+    main {
+        transform: scale(1.1);
+    }
+}
+
+.forecast-item {
+    transition: all 0.3s ease;
+}
+
+.forecast-item:hover {
+    transform: translateX(10px);
+    color: var(--primary);
+}
+
+/* Custom Scrollbar (if needed) */
+::-webkit-scrollbar {
+    width: 6px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+/* Lucide Icon override */
+svg {
+    stroke-width: 1.5px;
+}
