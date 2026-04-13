@@ -14,7 +14,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-    <link rel="stylesheet" href="styles.css?v=moon1">
+    <link rel="stylesheet" href="styles.css?v=yellow1">
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
@@ -37,7 +37,7 @@
 <body class="h-screen w-screen flex flex-col justify-center items-center p-0 m-0">
     <!-- Background Image -->
     <div class="fixed inset-0 z-0">
-        <img src="https://skoop-dev-code-agent.s3.us-east-1.amazonaws.com/skoop-n8n-continue%2Faigen-1776090268793%2Fassets%2Fmoon_background-1776092129031.png"
+        <img src="https://skoop-dev-code-agent.s3.us-east-1.amazonaws.com/skoop-n8n-continue%2Faigen-1776090268793%2Fassets%2Fyellow_moon_background-1776092690537.png"
              class="w-full h-full object-cover" alt="Background">
         <div class="fixed inset-0 bg-overlay z-10"></div>
     </div>
@@ -48,7 +48,7 @@
         <!-- Left Column: Current Weather -->
         <div class="lg:col-span-2 flex flex-col justify-between space-y-8">
             <div id="location-header" class="space-y-2">
-                <h2 id="current-date" class="text-[#94a3b8] font-medium tracking-wide uppercase text-sm">Monday, April 13</h2>
+                <h2 id="current-date" class="text-yellow-400 font-medium tracking-wide uppercase text-sm">Monday, April 13</h2>
                 <h1 id="location-name" class="text-6xl font-bold tracking-tight">Detecting Location...</h1>
             </div>
 
@@ -59,7 +59,7 @@
                 <div>
                     <div class="flex items-start">
                         <span id="current-temp" class="text-9xl font-bold">--</span>
-                        <span class="text-4xl font-medium mt-4 text-[#94a3b8]">°C</span>
+                        <span class="text-4xl font-medium mt-4 text-yellow-400">°C</span>
                     </div>
                     <p id="weather-description" class="text-2xl text-gray-300 font-light mt-[-10px]">Cloudy</p>
                 </div>
@@ -68,17 +68,17 @@
             <!-- Stats Bar -->
             <div class="grid grid-cols-3 gap-4">
                 <div class="weather-card rounded-2xl p-6 flex flex-col items-center justify-center space-y-2">
-                    <i data-lucide="droplets" class="text-[#94a3b8] w-6 h-6"></i>
+                    <i data-lucide="droplets" class="text-yellow-400 w-6 h-6"></i>
                     <span class="text-sm text-gray-400">Humidity</span>
                     <span id="stat-humidity" class="text-xl font-semibold">--%</span>
                 </div>
                 <div class="weather-card rounded-2xl p-6 flex flex-col items-center justify-center space-y-2">
-                    <i data-lucide="wind" class="text-[#94a3b8] w-6 h-6"></i>
+                    <i data-lucide="wind" class="text-yellow-400 w-6 h-6"></i>
                     <span class="text-sm text-gray-400">Wind</span>
                     <span id="stat-wind" class="text-xl font-semibold">-- km/h</span>
                 </div>
                 <div class="weather-card rounded-2xl p-6 flex flex-col items-center justify-center space-y-2">
-                    <i id="moon-icon" data-lucide="moon" class="text-[#94a3b8] w-6 h-6"></i>
+                    <i id="moon-icon" data-lucide="moon" class="text-yellow-400 w-6 h-6"></i>
                     <span class="text-sm text-gray-400">Moon Phase</span>
                     <span id="stat-moon" class="text-xl font-semibold">--</span>
                 </div>
@@ -132,7 +132,7 @@
         <span class="text-xs uppercase tracking-tighter">Digital Signage Network</span>
     </div>
 
-    <script src="script.js?v=moon1"></script>
+    <script src="script.js?v=yellow1"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function () {
