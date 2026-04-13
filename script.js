@@ -62,6 +62,7 @@ const App = {
         console.log("Initializing Weather App...");
         this.updateClock();
         this.updateDate();
+        this.generateStars();
         setInterval(() => this.updateClock(), 1000 * 60);
 
         // Add current location if available
@@ -269,6 +270,34 @@ const App = {
     updateLastUpdated() {
         const now = new Date();
         document.getElementById('last-updated').textContent = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+    },
+
+    generateStars() {
+        const container = document.getElementById('stars-container');
+        if (!container) return;
+
+        const starCount = 100;
+        for (let i = 0; i < starCount; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+
+            const size = Math.random() * 2 + 1;
+            const x = Math.random() * 100;
+            const y = Math.random() * 100;
+            const delay = Math.random() * 5;
+            const duration = Math.random() * 3 + 2;
+            const maxOpacity = Math.random() * 0.5 + 0.3;
+
+            star.style.width = `${size}px`;
+            star.style.height = `${size}px`;
+            star.style.left = `${x}%`;
+            star.style.top = `${y}%`;
+            star.style.setProperty('--delay', `${delay}s`);
+            star.style.setProperty('--duration', `${duration}s`);
+            star.style.setProperty('--max-opacity', maxOpacity);
+
+            container.appendChild(star);
+        }
     }
 };
 

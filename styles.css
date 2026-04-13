@@ -30,6 +30,21 @@ body {
                 linear-gradient(to bottom, rgba(2, 2, 5, 0.2), rgba(5, 5, 10, 0.9));
 }
 
+/* Twinkling Stars */
+.star {
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+    opacity: 0;
+    animation: twinkle var(--duration) ease-in-out infinite;
+    animation-delay: var(--delay);
+}
+
+@keyframes twinkle {
+    0%, 100% { opacity: 0; transform: scale(0.5); }
+    50% { opacity: var(--max-opacity); transform: scale(1); }
+}
+
 /* Animations */
 @keyframes float {
     0% { transform: translateY(0px); }
