@@ -181,17 +181,49 @@ const App = {
         document.getElementById('stat-humidity').textContent = `${Math.round(current.relative_humidity_2m)}%`;
         document.getElementById('stat-wind').textContent = `${Math.round(current.wind_speed_10m)} km/h`;
 
-        // UV Index from daily[0]
-        const uvValue = daily ? Math.round(daily.uv_index_max[0]) : "--";
-        let uvText = "Low";
-        if (uvValue >= 11) uvText = "Extreme";
-        else if (uvValue >= 8) uvText = "Very High";
-        else if (uvValue >= 6) uvText = "High";
-        else if (uvValue >= 3) uvText = "Moderate";
-
-        document.getElementById('stat-uv').textContent = uvValue !== "--" ? `${uvValue} (${uvText})` : uvText;
+        // Moon Phase calculation
+        const moon = this.getMoonPhase(new Date());
+        document.getElementById('stat-moon').textContent = moon.label;
+        const moonIcon = document.getElementById('moon-icon');
+        moonIcon.setAttribute('data-lucide', moon.icon);
 
         lucide.createIcons();
+    },
+
+    getMoonPhase(date) {
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1;
+        const day = date.getDate();
+
+        let c = 0, e = 0, jd = 0, b = 0;
+        if (month < 3) { year--; month += 12; }
+        month++;
+        c = 365.25 * year;
+        e = 30.6 * month;
+        jd = c + e + day - 694039.09; // jd is total days elapsed
+        jd /= 29.530588853; // divide by the lunar cycle
+        b = parseInt(jd); // int(jd) -> b, our local variable
+        jd -= b; // subtract integer part to leave fractional part of cycle
+        b = Math.round(jd * 8); // scale fraction from 0-8 and round
+
+        if (b >= 8) b = 0; // 0 and 8 are the same so wrap around
+
+        const phases = [
+            { label: 'New Moon', icon: 'moon' },
+            { label: 'Waxing Crescent', icon: 'moon' },
+            { label: 'First Quarter', icon: 'moon' },
+            { label: 'Waxing Gibbous', icon: 'moon' },
+            { label: 'Full Moon', icon: 'moon' },
+            { label: 'Waning Gibbous', icon: 'moon' },
+            { label: 'Last Quarter', icon: 'moon' },
+            { label: 'Waning Crescent', icon: 'moon' }
+        ];
+
+        // Specific Lucide icons if available (Lucide has moon-star, etc. but simple moon works well with label)
+        const lucideMoonIcons = ['moon', 'moon', 'moon', 'moon', 'moon', 'moon', 'moon', 'moon'];
+        // Note: For simplicity and consistent design, I'll use the 'moon' icon for all, but can differentiate labels.
+
+        return phases[b];
     },
 
     renderForecast(daily) {
@@ -210,7 +242,7 @@ const App = {
             item.className = 'forecast-item flex items-center justify-between group';
             item.innerHTML = `
                 <span class="w-12 font-medium text-gray-300 group-hover:text-white transition-colors">${dayName}</span>
-                <i data-lucide="${info.icon}" class="w-8 h-8 text-[#00b7af]"></i>
+                <i data-lucide="${info.icon}" class="w-8 h-8 text-[#94a3b8]"></i>
                 <div class="flex items-center space-x-3 w-20 justify-end">
                     <span class="font-bold">${max}°</span>
                     <span class="text-gray-400 text-sm">${min}°</span>
