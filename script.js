@@ -242,7 +242,7 @@ const App = {
             item.className = 'forecast-item flex items-center justify-between group';
             item.innerHTML = `
                 <span class="w-12 font-medium text-gray-300 group-hover:text-white transition-colors">${dayName}</span>
-                <i data-lucide="${info.icon}" class="w-8 h-8 text-yellow-400"></i>
+                <i data-lucide="${info.icon}" class="w-8 h-8 text-green-400"></i>
                 <div class="flex items-center space-x-3 w-20 justify-end">
                     <span class="font-bold">${max}°</span>
                     <span class="text-gray-400 text-sm">${min}°</span>
