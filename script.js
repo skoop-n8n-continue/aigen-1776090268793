@@ -4,8 +4,11 @@
  */
 
 const CONFIG = {
-    DEFAULT_CITY: { name: "New York", lat: 40.7128, lon: -74.0060 },
+    LOCATIONS: [
+        { name: "Lahore, Pakistan", lat: 31.5204, lon: 74.3587 }
+    ],
     REFRESH_INTERVAL: 10 * 60 * 1000, // 10 minutes
+    ROTATION_INTERVAL: 15 * 1000,    // 15 seconds for snappier rotation
     REVERSE_GEO_API: "https://api.bigdatacloud.net/data/reverse-geocode-client"
 };
 
@@ -50,9 +53,9 @@ function getWeatherInfo(code) {
  */
 const App = {
     state: {
-        lat: CONFIG.DEFAULT_CITY.lat,
-        lon: CONFIG.DEFAULT_CITY.lon,
-        locationName: CONFIG.DEFAULT_CITY.name
+        locations: [...CONFIG.LOCATIONS],
+        currentIndex: 0,
+        weatherData: {}
     },
 
     async init() {
@@ -61,11 +64,21 @@ const App = {
         this.updateDate();
         setInterval(() => this.updateClock(), 1000 * 60);
 
+        // Add current location if available
         await this.detectLocation();
-        await this.fetchWeather();
 
-        // Auto-refresh weather
-        setInterval(() => this.fetchWeather(), CONFIG.REFRESH_INTERVAL);
+        // Initial fetch
+        await this.fetchAllWeather();
+
+        // Auto-refresh weather data
+        setInterval(() => this.fetchAllWeather(), CONFIG.REFRESH_INTERVAL);
+
+        // Start rotation if multiple locations
+        if (this.state.locations.length > 1) {
+            setInterval(() => this.rotateLocation(), CONFIG.ROTATION_INTERVAL);
+        }
+
+        this.renderCurrentLocation();
     },
 
     async detectLocation() {
@@ -73,13 +86,22 @@ const App = {
             if ("geolocation" in navigator) {
                 navigator.geolocation.getCurrentPosition(
                     async (position) => {
-                        this.state.lat = position.coords.latitude;
-                        this.state.lon = position.coords.longitude;
-                        await this.reverseGeocode(this.state.lat, this.state.lon);
+                        const lat = position.coords.latitude;
+                        const lon = position.coords.longitude;
+                        const name = await this.reverseGeocode(lat, lon);
+
+                        // Check if already in list (simple lat/lon check or name check)
+                        const exists = this.state.locations.some(loc =>
+                            (Math.abs(loc.lat - lat) < 0.1 && Math.abs(loc.lon - lon) < 0.1)
+                        );
+
+                        if (!exists) {
+                            this.state.locations.push({ name, lat, lon });
+                        }
                         resolve();
                     },
                     (error) => {
-                        console.warn("Geolocation failed, using default city:", error.message);
+                        console.warn("Geolocation failed:", error.message);
                         resolve();
                     },
                     { timeout: 5000 }
@@ -94,31 +116,57 @@ const App = {
         try {
             const response = await fetch(`${CONFIG.REVERSE_GEO_API}?latitude=${lat}&longitude=${lon}&localityLanguage=en`, { cache: 'no-store' });
             const data = await response.json();
-            this.state.locationName = data.city || data.locality || data.principalSubdivision || "Your Location";
-            document.getElementById('location-name').textContent = this.state.locationName;
+            return data.city || data.locality || data.principalSubdivision || "Current Location";
         } catch (error) {
             console.error("Reverse geocoding failed:", error);
-            document.getElementById('location-name').textContent = "Current Location";
+            return "Current Location";
         }
     },
 
-    async fetchWeather() {
-        const { lat, lon } = this.state;
-        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min&forecast_days=6&timezone=auto`;
+    async fetchAllWeather() {
+        for (const loc of this.state.locations) {
+            await this.fetchWeatherForLocation(loc);
+        }
+        this.renderCurrentLocation();
+    },
+
+    async fetchWeatherForLocation(loc) {
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${loc.lat}&longitude=${loc.lon}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,uv_index_max&forecast_days=6&timezone=auto`;
 
         try {
             const response = await fetch(url, { cache: 'no-store' });
             const data = await response.json();
-            this.renderCurrent(data.current);
-            this.renderForecast(data.daily);
-            this.updateLastUpdated();
-            document.getElementById('location-name').textContent = this.state.locationName;
+            this.state.weatherData[loc.name] = data;
         } catch (error) {
-            console.error("Failed to fetch weather data:", error);
+            console.error(`Failed to fetch weather for ${loc.name}:`, error);
         }
     },
 
-    renderCurrent(current) {
+    rotateLocation() {
+        const mainContent = document.querySelector('main');
+        mainContent.classList.add('animate__fadeOut');
+
+        setTimeout(() => {
+            this.state.currentIndex = (this.state.currentIndex + 1) % this.state.locations.length;
+            this.renderCurrentLocation();
+            mainContent.classList.remove('animate__fadeOut');
+            mainContent.classList.add('animate__fadeIn');
+        }, 1000);
+    },
+
+    renderCurrentLocation() {
+        const loc = this.state.locations[this.state.currentIndex];
+        const data = this.state.weatherData[loc.name];
+
+        if (!data) return;
+
+        document.getElementById('location-name').textContent = loc.name;
+        this.renderCurrent(data.current, data.daily);
+        this.renderForecast(data.daily);
+        this.updateLastUpdated();
+    },
+
+    renderCurrent(current, daily) {
         const info = getWeatherInfo(current.weather_code);
 
         // Update main temperature
@@ -132,9 +180,16 @@ const App = {
         // Update stats
         document.getElementById('stat-humidity').textContent = `${Math.round(current.relative_humidity_2m)}%`;
         document.getElementById('stat-wind').textContent = `${Math.round(current.wind_speed_10m)} km/h`;
-        // UV Index is not in current but could be derived or fetched. Showing a random UV for now or fetching if available.
-        // Actually Open-Meteo current doesn't include UV by default without extra params.
-        document.getElementById('stat-uv').textContent = "Low";
+
+        // UV Index from daily[0]
+        const uvValue = daily ? Math.round(daily.uv_index_max[0]) : "--";
+        let uvText = "Low";
+        if (uvValue >= 11) uvText = "Extreme";
+        else if (uvValue >= 8) uvText = "Very High";
+        else if (uvValue >= 6) uvText = "High";
+        else if (uvValue >= 3) uvText = "Moderate";
+
+        document.getElementById('stat-uv').textContent = uvValue !== "--" ? `${uvValue} (${uvText})` : uvText;
 
         lucide.createIcons();
     },
