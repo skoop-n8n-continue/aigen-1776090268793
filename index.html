@@ -14,7 +14,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-    <link rel="stylesheet" href="styles.css?v=sun1">
+    <link rel="stylesheet" href="styles.css?v=mic1">
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
@@ -127,13 +127,23 @@
     </main>
 
     <!-- Footer for Signage Info -->
+    <div class="fixed bottom-4 left-8 z-30 flex items-center space-x-3 text-white/60">
+        <div class="flex items-center space-x-2 bg-white/5 px-3 py-1.5 rounded-full border border-white/10 backdrop-blur-md">
+            <div class="relative flex items-center justify-center">
+                <div class="mic-pulse absolute inset-0 bg-yellow-400 rounded-full opacity-0"></div>
+                <i data-lucide="mic" class="w-4 h-4 text-yellow-400 relative z-10"></i>
+            </div>
+            <span class="text-[10px] font-semibold uppercase tracking-widest text-yellow-100/80">Listening</span>
+        </div>
+    </div>
+
     <div class="fixed bottom-4 right-8 z-30 flex items-center space-x-2 text-white/40">
         <span id="clock" class="text-lg font-medium">14:30</span>
         <span class="w-1 h-1 bg-white/20 rounded-full"></span>
         <span class="text-xs uppercase tracking-tighter">Digital Signage Network</span>
     </div>
 
-    <script src="script.js?v=sun1"></script>
+    <script src="script.js?v=mic1"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function () {
